@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 
-ENTRIES_PATH="/boot/loader/entries"
 CMDLINE_PATH="/etc"
 CMDLINE_FILE="${CMDLINE_PATH}/cmdline"
 BACKUP="${CMDLINE_FILE}.bak"
@@ -15,15 +14,18 @@ function error() {
 
 # ensure the programs needed to execute are available
 function check_progs() {
-        local PROGS="sed cat"
+        local PROGS="sed cat bootctl"
         which ${PROGS} > /dev/null 2>&1 || error "Searching PATH fails to find executables among: ${PROGS}"
 }
 
-# ensure the configuration files needed to execute are available
+# ensure the files needed to execute are available
 function check_conf_files() {
 	# cmdline file must exist
 	[[ -f "${CMDLINE_FILE}" ]] || error "${CMDLINE_FILE} does not exist"
 
+	ESP=$(bootctl status --print-path)
+	[[ -n "${ESP}" ]] || error "Cannot find EFI System Partition."
+	ENTRIES_PATH="${ESP}/loader/entries"
 	ENTRIES=($(ls ${ENTRIES_PATH}/*.conf 2> /dev/null)) || error "No systemd-boot loader entries found in ${ENTRIES_PATH}"
 }
 
