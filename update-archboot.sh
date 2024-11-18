@@ -33,7 +33,7 @@ function main() {
   printf "Updating Archboot using URL: %s\n" "${_ARCHBOOT_X86_64_BASE_URL}"
 
   _ARCHBOOT_TEMPDIR=$(mktemp --directory)
-  curl --no-progress-meter --create-dirs \
+  curl --parallel --no-progress-meter --create-dirs \
         --output-dir "${_ARCHBOOT_TEMPDIR}" \
         --remote-name-all \
         "${_ARCHBOOT_X86_64_BASE_URL}/${_ARCHBOOT_X86_64_INITRAMFS}" \
