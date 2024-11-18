@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+shopt -s nullglob
 
 CMDLINE_PATH="/etc"
 CMDLINE_FILE="${CMDLINE_PATH}/cmdline"
@@ -26,7 +27,7 @@ function check_conf_files() {
 	ESP=$(bootctl status --print-path)
 	[[ -n "${ESP}" ]] || error "Cannot find EFI System Partition."
 	ENTRIES_PATH="${ESP}/loader/entries"
-	ENTRIES=($(ls ${ENTRIES_PATH}/*.conf 2> /dev/null)) || error "No systemd-boot loader entries found in ${ENTRIES_PATH}"
+	ENTRIES=(${ENTRIES_PATH}/*.conf)
 }
 
 # script to automate updates to systemd-boot loader entries' kernel options
