@@ -24,7 +24,7 @@ function check_conf_files() {
 	# cmdline file must exist
 	[[ -f "${CMDLINE_FILE}" ]] || error "${CMDLINE_FILE} does not exist"
 
-	ENTRIES=$(ls ${ENTRIES_PATH}/*.conf 2> /dev/null) || error "No systemd-boot loader entries found in ${ENTRIES_PATH}"
+	ENTRIES=($(ls ${ENTRIES_PATH}/*.conf 2> /dev/null)) || error "No systemd-boot loader entries found in ${ENTRIES_PATH}"
 }
 
 # script to automate updates to systemd-boot loader entries' kernel options
@@ -35,15 +35,15 @@ function main() {
 	check_progs
 	check_conf_files
 	
-	# backup current options; assume arch.conf exists
-	sed --quiet 's/^options[[:space:]]*//p' ${ENTRIES_PATH}/arch.conf > ${BACKUP}
+	# backup current options
+	sed --quiet 's/^options[[:space:]]*//p' ${ENTRIES[0]} > ${BACKUP}
 
 	# read in new options
 	OPTS=$(cat ${CMDLINE_FILE})
 	echo "Using options: $OPTS..."
 
 	#update options for all entries
-	for entry in ${ENTRIES}
+	for entry in ${ENTRIES[@]}
 	do
 		echo "Updating ${entry}..."
 		sed --in-place "s#^options.*#options\t\t${OPTS}#" ${entry}
