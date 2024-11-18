@@ -27,7 +27,7 @@ function check_conf_files() {
 	ESP=$(bootctl status --print-path)
 	[[ -n "${ESP}" ]] || error "Cannot find EFI System Partition."
 	ENTRIES_PATH="${ESP}/loader/entries"
-	ENTRIES=(${ENTRIES_PATH}/*.conf)
+	ENTRIES=(${ENTRIES_PATH}/arch*.conf)
 }
 
 # script to automate updates to systemd-boot loader entries' kernel options
